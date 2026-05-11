@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Автомеханик — Модульная система</title>
+    <title>Автомеханик — Модульная версия</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
-        body { background: #0a0a0a; font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; }
+        * { user-select: none; margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a0a; overflow: hidden; height: 100vh; }
         
-        /* КОНСОЛЬ ЗАГРУЗКИ */
+        /* ===== КОНСОЛЬ ===== */
         #bootConsole {
             position: fixed;
             top: 0;
@@ -24,271 +25,259 @@
             overflow-y: auto;
             box-shadow: inset 0 0 30px rgba(0,255,65,0.1);
         }
-        .boot-line {
-            white-space: pre-wrap;
-            margin-bottom: 4px;
-            opacity: 0;
-            animation: fadeIn 0.2s forwards;
-        }
+        .boot-line { white-space: pre-wrap; margin-bottom: 4px; opacity: 0; animation: fadeIn 0.2s forwards; }
         @keyframes fadeIn { to { opacity: 1; } }
-        .boot-cursor {
-            display: inline-block;
-            width: 10px;
+        .boot-progress-bar {
+            background: #1a3a1a;
+            border-radius: 4px;
             height: 18px;
-            background: #00ff41;
+            width: 300px;
+            overflow: hidden;
+            display: inline-block;
             vertical-align: middle;
-            margin-left: 4px;
-            animation: blink 1s step-end infinite;
+            margin-left: 10px;
         }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        .boot-progress {
-            color: #ffff00;
+        .boot-progress-fill {
+            background: #00ff41;
+            height: 100%;
+            width: 0%;
+            transition: width 0.1s linear;
         }
-        .boot-success {
-            color: #00ff41;
-        }
-        .boot-error {
-            color: #ff4444;
-        }
+        .boot-success { color: #00ff41; }
+        .boot-error { color: #ff4444; }
+        .boot-warning { color: #ffaa00; }
         
-        /* ОСНОВНОЙ ИНТЕРФЕЙС (скрыт до загрузки) */
+        /* ===== ОСНОВНОЙ ИНТЕРФЕЙС (стиль из твоего билда) ===== */
         #gameUI {
             display: none;
-            opacity: 0;
-            transition: opacity 0.5s;
+            background: #0f172a;
+            min-height: 100vh;
+            padding: 1.5rem;
+            font-family: system-ui, -apple-system, sans-serif;
         }
-        
-        .garage-slot { transition: all 0.2s; cursor: pointer; }
-        .garage-slot:hover { transform: scale(1.02); background-color: #334155; }
-        select, option { background-color: #1e293b; color: #f1f5f9; }
-        .modal-bg { background: rgba(0,0,0,0.9); backdrop-filter: blur(4px); }
-        .game-toast { position: fixed; bottom: 20px; right: 20px; background: #1e293b; border-left: 4px solid #3b82f6; padding: 12px 20px; border-radius: 12px; z-index: 200; animation: slideIn 0.3s; max-width: 320px; font-family: system-ui; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .garage-slot {
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: #1f2937;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+        }
+        .garage-slot:hover {
+            transform: scale(1.02);
+            background-color: #4b5563;
+        }
+        select, option {
+            background-color: #1f2937;
+            color: white;
+        }
+        .modal-bg {
+            background-color: rgba(0,0,0,0.85);
+            backdrop-filter: blur(3px);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #374151; }
+        ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 3px; }
+        .game-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e293b;
+            border-left: 4px solid #3b82f6;
+            padding: 12px 20px;
+            border-radius: 12px;
+            z-index: 200;
+            animation: slideIn 0.3s;
+            max-width: 320px;
+            font-family: system-ui;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
     </style>
 </head>
 <body>
 
 <!-- КОНСОЛЬ ЗАГРУЗКИ -->
-<div id="bootConsole"></div>
+<div id="bootConsole">
+    <div class="boot-line">[BOOT] Автомеханик v2.0</div>
+    <div class="boot-line">[BOOT] Инициализация модульной системы...</div>
+    <div class="boot-line" id="bootStatus"></div>
+</div>
 
-<!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
+<!-- ОСНОВНОЙ ИНТЕРФЕЙС (стиль из твоего билда) -->
 <div id="gameUI">
-    <div class="min-h-screen p-6 text-slate-200" style="background: #0f172a; font-family: system-ui;">
-        <div class="max-w-6xl mx-auto">
-            <div class="flex flex-wrap justify-between items-center bg-slate-800 rounded-2xl p-4 mb-6 gap-3 shadow-xl">
-                <div><h1 class="text-3xl font-bold text-white">🔧 Автомеханик</h1><p class="text-slate-400 text-sm" id="statusLabel">Модульная система</p></div>
-                <div class="flex gap-2 flex-wrap">
-                    <div class="text-2xl font-bold text-emerald-400" id="money">0</div>
-                    <button id="warehouseBtn" class="bg-amber-700 px-3 py-1 rounded text-sm">📦 Склад(<span id="warehouseCount">0</span>)</button>
-                    <button id="saveBtn" class="bg-emerald-700 px-3 py-1 rounded text-sm">💾</button>
-                    <button id="loadBtn" class="bg-sky-700 px-3 py-1 rounded text-sm">📂</button>
-                </div>
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-wrap justify-between items-center bg-gray-800 rounded-2xl p-4 mb-6 gap-3 shadow-xl">
+            <div>
+                <h1 class="text-3xl font-bold text-white">🔧 Автомеханик</h1>
+                <p class="text-gray-400 text-sm">Уникальная ходовая | КПП | Полный тюнинг</p>
             </div>
-            <div class="grid grid-cols-4 gap-3 mb-6">
-                <button id="dumpBtn" class="bg-stone-700 py-3 rounded-xl">🗑 СВАЛКА</button>
-                <button id="shopBtn" class="bg-blue-800 py-3 rounded-xl">🏪 МАГАЗИН</button>
-                <button id="avitoBtn" class="bg-purple-800 py-3 rounded-xl">🛒 АВТОВИТО</button>
-                <button id="raceBtn" class="bg-red-800 py-3 rounded-xl">🏁 ГОНКИ</button>
+            <div class="flex gap-2 flex-wrap">
+                <div class="text-2xl font-bold text-green-400" id="moneyDisplay">1 500 000</div>
+                <button id="warehouseBtn" class="bg-yellow-700 hover:bg-yellow-600 px-3 py-1 rounded text-sm transition">📦 Склад(<span id="warehouseCount">0</span>)</button>
+                <button id="saveBtn" class="bg-green-700 hover:bg-green-600 px-3 py-1 rounded text-sm transition">💾</button>
+                <button id="loadBtn" class="bg-blue-700 hover:bg-blue-600 px-3 py-1 rounded text-sm transition">📂</button>
             </div>
-            <div class="bg-slate-800 rounded-xl p-4 shadow-xl"><h2 class="text-xl font-bold mb-3">🚗 Гараж (2×3)</h2><div id="garage" class="grid grid-cols-3 gap-4"></div></div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 mb-6">
+            <button id="dumpBtn" class="bg-stone-700 hover:bg-stone-600 text-white font-bold py-3 rounded-xl text-lg shadow transition">🗑 СВАЛКА</button>
+            <button id="shopBtn" class="bg-blue-800 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-lg shadow transition">🏪 МАГАЗИН</button>
+            <button id="avitoBtn" class="bg-purple-800 hover:bg-purple-700 text-white font-bold py-3 rounded-xl text-lg shadow transition">🛒 АВТОВИТО</button>
+        </div>
+
+        <div class="bg-gray-800 rounded-xl p-4 shadow-xl">
+            <h2 class="text-xl font-bold text-white mb-3">🚗 Гараж (2×3)</h2>
+            <div id="garageGrid" class="grid grid-cols-3 gap-4"></div>
         </div>
     </div>
 </div>
 
-<!-- Модалки -->
-<div id="dumpModal" class="fixed inset-0 modal-bg hidden z-50 p-4 overflow-auto"><div class="bg-slate-800 max-w-4xl mx-auto p-5 rounded-xl"><div class="flex justify-between"><h2 class="text-2xl font-bold">🗑 СВАЛКА</h2><button class="closeModal text-red-400 text-3xl">&times;</button></div><div id="dumpList" class="grid md:grid-cols-3 gap-3"></div></div></div>
-<div id="shopModal" class="fixed inset-0 modal-bg hidden z-50 p-4 overflow-auto"><div class="bg-slate-800 max-w-4xl mx-auto p-5 rounded-xl"><div class="flex justify-between"><h2 class="text-2xl font-bold">🏪 МАГАЗИН</h2><button class="closeModal text-red-400 text-3xl">&times;</button></div><div id="shopList" class="max-h-[60vh] overflow-auto"></div></div></div>
-<div id="avitoModal" class="fixed inset-0 modal-bg hidden z-50 p-4 overflow-auto"><div class="bg-slate-800 max-w-4xl mx-auto p-5 rounded-xl"><div class="flex justify-between"><h2 class="text-2xl font-bold">🛒 АВТОВИТО</h2><button class="closeModal text-red-400 text-3xl">&times;</button></div><div id="avitoList" class="grid md:grid-cols-2 gap-3 max-h-[60vh] overflow-auto"></div><button id="refreshAvito" class="bg-slate-700 px-4 py-2 rounded mt-3">🔄 Обновить</button><button id="surpriseBtn" class="bg-amber-700 px-4 py-2 rounded mt-3 ml-2">🎁 Кот в мешке</button></div></div>
-<div id="warehouseModal" class="fixed inset-0 modal-bg hidden z-50 p-4 overflow-auto"><div class="bg-slate-800 max-w-2xl mx-auto p-5 rounded-xl"><div class="flex justify-between"><h2 class="text-2xl font-bold">📦 СКЛАД</h2><button class="closeModal text-red-400 text-3xl">&times;</button></div><div id="warehouseList" class="max-h-[60vh] overflow-auto"></div></div></div>
-<div id="carModal" class="fixed inset-0 modal-bg hidden z-50 p-4 overflow-auto"><div class="bg-slate-800 max-w-3xl mx-auto p-5 rounded-xl"><div class="flex justify-between items-center"><h2 id="carTitle" class="text-2xl font-bold">🚘</h2><button id="sellCarBtn" class="bg-emerald-700 px-4 py-1 rounded">💰 Продать</button><button class="closeModal text-red-400 text-3xl">&times;</button></div><div class="grid grid-cols-4 gap-2 mt-4"><button id="tabMotor" class="bg-indigo-700 py-2 rounded">🔧 Мотор</button><button id="tabBody" class="bg-slate-700 py-2 rounded">🎨 Кузов</button><button id="tabSusp" class="bg-slate-700 py-2 rounded">🛞 Ходовая</button><button id="tabPolice" class="bg-amber-700 py-2 rounded">👮‍♂️ ГИБДД</button></div><div id="carContent" class="mt-4"></div></div></div>
-<div id="raceModal" class="fixed inset-0 modal-bg hidden z-50 p-4 overflow-auto"><div class="bg-slate-800 max-w-3xl mx-auto p-5 rounded-xl"><div class="flex justify-between"><h2 class="text-2xl font-bold">🏁 ГОНКИ</h2><button class="closeModal text-red-400 text-3xl">&times;</button></div><div id="raceContent" class="mt-4"></div></div></div>
-
 <script>
-// ========== КОНСОЛЬ ЗАГРУЗКИ ==========
+// ========== КОНСОЛЬ ==========
 const bootConsole = document.getElementById("bootConsole");
+const bootStatus = document.getElementById("bootStatus");
+
 function bootLog(text, type = "info") {
     const line = document.createElement("div");
     line.className = "boot-line";
-    line.style.color = type === "error" ? "#ff4444" : type === "progress" ? "#ffff00" : "#00ff41";
+    if (type === "error") line.style.color = "#ff4444";
+    else if (type === "progress") line.style.color = "#ffff00";
+    else line.style.color = "#00ff41";
     line.innerHTML = `> ${text}`;
     bootConsole.appendChild(line);
     line.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
-function bootProgress(percent) {
-    const line = document.createElement("div");
-    line.className = "boot-line";
-    line.innerHTML = `> ${'█'.repeat(Math.floor(percent/5))}${'.'.repeat(20-Math.floor(percent/5))} ${percent}%`;
-    bootConsole.appendChild(line);
-}
-function bootClear() {
-    bootConsole.innerHTML = '<div class="boot-line">[BOOT] Загрузка модулей...</div>';
+
+function bootProgressBar(percent) {
+    const bar = document.createElement("div");
+    bar.className = "boot-line";
+    const full = 30;
+    const filled = Math.floor(percent / (100 / full));
+    const empty = full - filled;
+    bar.innerHTML = `> [${'█'.repeat(filled)}${'░'.repeat(empty)}] ${percent}%`;
+    bootConsole.appendChild(bar);
 }
 
-// Симуляция загрузки файлов
+function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+// ========== ЗАГРУЗЧИК ==========
+async function loadModule(name, url) {
+    bootLog(`Загрузка ${name}.txt...`);
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const text = await response.text();
+        bootLog(`✅ ${name}.txt загружен (${text.split('\n').length} строк)`, "success");
+        return text;
+    } catch(e) {
+        bootLog(`❌ ${name}.txt не найден! Путь: ${url}`, "error");
+        return null;
+    }
+}
+
+function parseCars(text) {
+    return text.split('\n').filter(l => l.trim() && !l.startsWith('#')).map(l => {
+        const [id, name, price, rarity, year, country, type] = l.split(',');
+        return { id, name, basePrice: +price, rarity: +rarity, year: +year, country, type };
+    });
+}
+
 async function bootSequence() {
-    bootClear();
-    bootLog("Инициализация загрузчика модулей...");
-    await delay(300);
+    bootLog("Инициализация модульной системы...");
+    await delay(500);
     
-    // Модули для загрузки
-    const modules = [
-        { name: "cars", url: "modules/cars.txt", parser: parseCars },
-        { name: "tuning", url: "modules/tuning.txt", parser: parseTuning },
-        { name: "racers", url: "modules/racers.txt", parser: parseRacers },
-        { name: "police", url: "modules/police.txt", parser: parsePolice }
-    ];
+    // Загрузка модулей
+    const carsText = await loadModule("cars", "modules/cars.txt");
+    const tuningText = await loadModule("tuning", "modules/tuning.txt");
+    const racersText = await loadModule("racers", "modules/racers.txt");
+    const policeText = await loadModule("police", "modules/police.txt");
     
-    let loadedCount = 0;
-    for (const mod of modules) {
-        bootLog(`Загрузка ${mod.name}.txt...`);
-        try {
-            const response = await fetch(mod.url);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const text = await response.text();
-            const data = mod.parser(text);
-            window[`_${mod.name}`] = data;
-            bootLog(`[OK] ${mod.name}.txt загружен (${data.length} записей)`, "success");
-            loadedCount++;
-        } catch(e) {
-            bootLog(`[FAIL] ${mod.name}.txt не найден!`, "error");
-            bootLog(`Ошибка: ${e.message}`, "error");
-        }
-        await delay(200);
+    if (!carsText) {
+        bootLog("КРИТИЧЕСКАЯ ОШИБКА: Нет cars.txt", "error");
+        bootLog("Проверьте папку modules/ и наличие файлов", "error");
+        return;
     }
     
-    if (loadedCount < 4) {
-        bootLog("", "error");
-        bootLog("НЕ ВСЕ МОДУЛИ ЗАГРУЖЕНЫ!", "error");
-        bootLog("Проверьте наличие файлов в папке /modules/", "error");
-        bootLog("Требуются: cars.txt, tuning.txt, racers.txt, police.txt", "error");
-        return false;
-    }
+    const cars = parseCars(carsText);
+    bootLog(`Обработано ${cars.length} машин`, "success");
     
-    bootLog("");
-    bootLog("Обработка данных...");
-    
-    // Симуляция прогрузки запчастей для каждой машины
-    const cars = window._cars;
+    // Прогрузка каждой машины с прогресс-баром
     for (let i = 0; i < cars.length; i++) {
         bootLog(`cars: ${cars[i].name}...`, "progress");
-        let progress = 0;
-        for (let p = 0; p <= 100; p += 10) {
-            await delay(15);
-            progress = p;
+        for (let p = 0; p <= 100; p += 20) {
+            await delay(30);
         }
-        bootProgress(100);
-        bootLog(`[OK] ${cars[i].name} — готов`, "success");
+        bootProgressBar(100);
+        bootLog(`✅ ${cars[i].name} — готов`, "success");
         await delay(50);
     }
     
     bootLog("");
-    bootLog("Прогрузка тюнинг-деталей...");
-    const tuning = window._tuning;
-    for (let i = 0; i < tuning.length; i++) {
-        bootLog(`tuning: ${tuning[i].category} -> ${tuning[i].part} (${tuning[i].type})`, "progress");
-        await delay(10);
-    }
-    bootLog("[OK] Тюнинг загружен", "success");
-    
-    bootLog("");
-    bootLog("Инициализация гоночной системы...");
+    bootLog("🔧 Прогрузка тюнинг-деталей...", "progress");
     await delay(300);
-    bootLog("[OK] Racers loaded", "success");
+    bootLog("✅ Тюнинг загружен", "success");
     
     bootLog("");
-    bootLog("Инициализация ГИБДД...");
+    bootLog("🏁 Инициализация гоночной системы...", "progress");
     await delay(200);
-    bootLog("[OK] Police services loaded", "success");
+    bootLog("✅ Racers loaded", "success");
     
     bootLog("");
-    bootLog("[OK] Init graphics...", "progress");
-    await delay(500);
+    bootLog("👮‍♂️ Инициализация ГИБДД...", "progress");
+    await delay(200);
+    bootLog("✅ Police services loaded", "success");
     
     bootLog("");
-    bootLog("===================================");
-    bootLog("ЗАГРУЗКА ЗАВЕРШЕНА УСПЕШНО", "success");
-    bootLog("===================================");
-    
+    bootLog("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    bootLog("🎮 Init graphics...", "progress");
     await delay(800);
+    bootLog("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    bootLog("✅ ЗАГРУЗКА ЗАВЕРШЕНА УСПЕШНО", "success");
+    bootLog("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     
-    // Плавно прячем консоль и показываем игру
+    await delay(1000);
+    
+    // Плавное исчезновение консоли и появление игры
     bootConsole.style.transition = "opacity 0.8s";
     bootConsole.style.opacity = "0";
     setTimeout(() => {
         bootConsole.style.display = "none";
         document.getElementById("gameUI").style.display = "block";
-        setTimeout(() => {
-            document.getElementById("gameUI").style.opacity = "1";
-            startGame();
-        }, 100);
+        startGame(cars);
     }, 800);
+}
+
+// ========== ИГРА ==========
+function startGame(cars) {
+    const garageGrid = document.getElementById("garageGrid");
     
-    return true;
-}
-
-function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
-
-// Парсеры модулей
-function parseCars(text) {
-    return text.split('\n').filter(l => l.trim() && !l.startsWith('#')).map(l => {
-        const [id,name,price,rarity,year,country,type] = l.split(',');
-        return { id, name, basePrice: +price, rarity: +rarity, year: +year, country, type };
-    });
-}
-function parseTuning(text) {
-    return text.split('\n').filter(l => l.trim() && !l.startsWith('#')).map(l => {
-        const [category,part,type,multiplier,forCar] = l.split(',');
-        return { category, part, type, multiplier: +multiplier, forCar: forCar || '*' };
-    });
-}
-function parseRacers(text) {
-    return text.split('\n').filter(l => l.trim() && !l.startsWith('#')).map(l => {
-        const [name,reaction,control,price] = l.split(',');
-        return { name, reaction: +reaction, control: +control, price: +price };
-    });
-}
-function parsePolice(text) {
-    return text.split('\n').filter(l => l.trim() && !l.startsWith('#')).map(l => {
-        const [service,price,desc] = l.split(',');
-        return { service, price: +price, desc };
-    });
-}
-
-// ========== ЗАПУСК ИГРЫ ПОСЛЕ ЗАГРУЗКИ ==========
-let money = 1500000, garage = Array(6).fill(null), warehouse = [], currentCar = null, currentTab = "motor";
-
-function startGame() {
-    document.getElementById("money").innerHTML = money;
-    document.getElementById("warehouseCount").innerHTML = warehouse.length;
-    renderGarage();
-    attachEventListeners();
-}
-
-function renderGarage() {
-    const container = document.getElementById("garage");
-    let html = "";
-    for (let i = 0; i < garage.length; i++) {
-        const c = garage[i];
-        if (c) {
-            html += `<div class="garage-slot bg-slate-700 p-3 rounded" data-i="${i}"><div class="font-bold">${c.name}</div><div class="text-xs">💰 ${c.price}₽</div></div>`;
-        } else {
-            html += `<div class="garage-slot bg-slate-700 p-3 rounded opacity-50 flex items-center justify-center" data-i="${i}"><div>🚫 Пусто</div></div>`;
-        }
+    // Показываем первые 6 машин в гараже
+    garageGrid.innerHTML = cars.slice(0, 6).map((car, i) => `
+        <div class="garage-slot" data-i="${i}">
+            <div class="font-bold text-white">${car.name}</div>
+            <div class="text-xs text-gray-300">${car.year} г.</div>
+            <div class="text-green-400 text-sm">💰 ${car.basePrice.toLocaleString()}₽</div>
+        </div>
+    `).join('');
+    
+    function showToast(msg, isError = false) {
+        const toast = document.createElement("div");
+        toast.className = "game-toast";
+        toast.style.borderLeftColor = isError ? "#ef4444" : "#3b82f6";
+        toast.innerHTML = `<span>${isError ? "⚠️" : "✅"} ${msg}</span>`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
     }
-    container.innerHTML = html;
-}
-
-function attachEventListeners() {
-    document.querySelectorAll(".closeModal").forEach(btn => {
-        btn.onclick = e => btn.closest(".fixed").classList.add("hidden");
-    });
-    document.getElementById("dumpBtn").onclick = () => alert("Свалка будет здесь (ждём модули)");
-    document.getElementById("shopBtn").onclick = () => alert("Магазин будет здесь (ждём модули)");
-    document.getElementById("avitoBtn").onclick = () => alert("АвтоВито будет здесь (ждём модули)");
-    document.getElementById("raceBtn").onclick = () => alert("Гонки будут здесь (ждём модули)");
-    document.getElementById("warehouseBtn").onclick = () => alert("Склад будет здесь (ждём модули)");
-    document.getElementById("saveBtn").onclick = () => alert("Сохранение (будет позже)");
-    document.getElementById("loadBtn").onclick = () => alert("Загрузка (будет позже)");
+    
+    // Временные обработчики (пока модули не подключены полностью)
+    document.getElementById("dumpBtn").onclick = () => showToast("🚧 Свалка будет в следующем обновлении", true);
+    document.getElementById("shopBtn").onclick = () => showToast("🚧 Магазин будет в следующем обновлении", true);
+    document.getElementById("avitoBtn").onclick = () => showToast("🚧 АвтоВито будет в следующем обновлении", true);
+    document.getElementById("warehouseBtn").onclick = () => showToast("📦 Склад будет в следующем обновлении", true);
+    document.getElementById("saveBtn").onclick = () => showToast("💾 Сохранение будет позже", true);
+    document.getElementById("loadBtn").onclick = () => showToast("📂 Загрузка будет позже", true);
 }
 
 // ЗАПУСК
