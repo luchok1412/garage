@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Автомеханик — Полная версия</title>
+    <link rel="stylesheet" href="modules/style.css">
+</head>
+<body>
+
+<div id="bootConsole">
+    <div class="boot-line">[BOOT] Автомеханик v3.0</div>
+    <div class="boot-line">[BOOT] Загрузка модулей...</div>
+</div>
+
+<div id="gameUI">
+    <div class="container">
+        <div class="game-header">
+            <div>
+                <div class="game-title">🔧 Автомеханик</div>
+                <div class="game-subtitle">Полная логика | Тюнинг | Гонки</div>
+            </div>
+            <div class="flex gap-3 items-center">
+                <div class="money" id="moneyDisplay">1 500 000 ₽</div>
+                <button id="warehouseBtn" class="bg-amber-700 px-3 py-1 rounded-lg text-sm">📦 Склад(<span id="warehouseCount">0</span>)</button>
+                <button id="saveBtn" class="bg-emerald-700 px-3 py-1 rounded-lg text-sm">💾</button>
+                <button id="loadBtn" class="bg-sky-700 px-3 py-1 rounded-lg text-sm">📂</button>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button id="dumpBtn" class="action-btn btn-dump">🗑 СВАЛКА</button>
+            <button id="shopBtn" class="action-btn btn-shop">🏪 МАГАЗИН</button>
+            <button id="avitoBtn" class="action-btn btn-avito">🛒 АВТОВИТО</button>
+            <button id="raceBtn" class="action-btn btn-race">🏁 ГОНКИ</button>
+        </div>
+        
+        <div class="garage-card">
+            <div class="garage-title">🚗 Гараж (2×3)</div>
+            <div id="garageGrid" class="garage-grid"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Модалки -->
+<div id="dumpModal" class="fixed inset-0 modal-bg hidden z-50 p-4 overflow-auto"><div class="bg-slate-800 max-w-4xl mx-auto p-5 rounded-xl"><div class="flex justify-between"><h2 class="text-2xl font-bold">🗑 СВАЛКА</h2><button class="closeModal text-red-400 text-3xl">&times;</button></div><div id="dumpList" class="grid md:grid-cols-3 gap-3"></div></div></div>
+<div id="shopModal" class="fixed inset-0 modal-bg hidden z-50 p-4 overflow-auto"><div class="bg-slate-800 max-w-4xl mx-auto p-5 rounded-xl"><div class="flex justify-between"><h2 class="text-2xl font-bold">🏪 МАГАЗИН</h2><button class="closeModal text-red-400 text-3xl">&times;</button></div><div id="shopList" class="max-h-[60vh] overflow-auto"></div></div></div>
+<div id="avitoModal" class="fixed inset-0 modal-bg hidden z-50 p-4 overflow-auto"><div class="bg-slate-800 max-w-4xl mx-auto p-5 rounded-xl"><div class="flex justify-between"><h2 class="text-2xl font-bold">🛒 АВТОВИТО</h2><button class="closeModal text-red-400 text-3xl">&times;</button></div><div id="avitoList" class="grid md:grid-cols-2 gap-3 max-h-[60vh] overflow-auto"></div><button id="refreshAvito" class="bg-slate-700 px-4 py-2 rounded mt-3">🔄 Обновить</button><button id="surpriseBtn" class="bg-amber-700 px-4 py-2 rounded mt-3 ml-2">🎁 Кот в мешке</button></div></div>
+<div id="warehouseModal" class="fixed inset-0 modal-bg hidden z-50 p-4 overflow-auto"><div class="bg-slate-800 max-w-2xl mx-auto p-5 rounded-xl"><div class="flex justify-between"><h2 class="text-2xl font-bold">📦 СКЛАД</h2><button class="closeModal text-red-400 text-3xl">&times;</button></div><div id="warehouseList" class="max-h-[60vh] overflow-auto"></div></div></div>
+<div id="carModal" class="fixed inset-0 modal-bg hidden z-50 p-4 overflow-auto"><div class="bg-slate-800 max-w-3xl mx-auto p-5 rounded-xl"><div class="flex justify-between items-center"><h2 id="carTitle" class="text-2xl font-bold">🚘</h2><button id="sellCarBtn" class="bg-emerald-700 px-4 py-1 rounded">💰 Продать</button><button class="closeModal text-red-400 text-3xl">&times;</button></div><div class="grid grid-cols-4 gap-2 mt-4"><button id="tabMotor" class="bg-indigo-700 py-2 rounded">🔧 Мотор</button><button id="tabBody" class="bg-slate-700 py-2 rounded">🎨 Кузов</button><button id="tabSusp" class="bg-slate-700 py-2 rounded">🛞 Ходовая</button><button id="tabPolice" class="bg-amber-700 py-2 rounded">👮‍♂️ ГИБДД</button></div><div id="carContent" class="mt-4"></div></div></div>
+<div id="raceModal" class="fixed inset-0 modal-bg hidden z-50 p-4 overflow-auto"><div class="bg-slate-800 max-w-3xl mx-auto p-5 rounded-xl"><div class="flex justify-between"><h2 class="text-2xl font-bold">🏁 ГОНКИ</h2><button class="closeModal text-red-400 text-3xl">&times;</button></div><div id="raceContent" class="mt-4"></div></div></div>
+
+<script src="modules/logic.js"></script>
+</body>
+</html>
