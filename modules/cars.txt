@@ -1,0 +1,51 @@
+# Формат: id,название,базовая_цена,редкость,год,страна,тип
+# тип: car (легковая), offroad (внедорожник), truck (грузовик)
+
+vaz2101,ВАЗ 2101,100000,1.0,1970,ru,car
+vaz2103,ВАЗ 2103,120000,1.0,1975,ru,car
+vaz2106,ВАЗ 2106,130000,1.0,1979,ru,car
+vaz2107,ВАЗ 2107,150000,1.0,1982,ru,car
+vaz2108,ВАЗ 2108,140000,1.0,1985,ru,car
+vaz2109,ВАЗ 2109,145000,1.0,1987,ru,car
+vaz2110,ВАЗ 2110,180000,1.0,1996,ru,car
+niva,Нива 2121,400000,1.1,1995,ru,offroad
+moskvich412,Москвич-412,120000,0.9,1970,ru,car
+volga24,ГАЗ-24 Волга,250000,1.0,1975,ru,car
+gazel,Газель,350000,1.0,2010,ru,truck
+uaz,УАЗ Хантер,600000,1.1,2005,ru,offroad
+lada_vesta,Лада Веста,800000,1.0,2016,ru,car
+bmw_e30,BMW E30,350000,1.1,1986,de,car
+bmw_e36,BMW E36,400000,1.1,1995,de,car
+bmw_e46,BMW E46,450000,1.0,2002,de,car
+bmw_e39,BMW E39,500000,1.0,2000,de,car
+bmw_m5,BMW M5 E60,2500000,1.8,2005,de,car
+mercedes_w124,Mercedes W124,550000,1.1,1993,de,car
+mercedes_w201,Mercedes 190E,300000,1.0,1988,de,car
+mercedes_w140,Mercedes S320,700000,1.3,1995,de,car
+mercedes_w211,Mercedes E55 AMG,1800000,1.6,2003,de,car
+audi_100,Audi 100,280000,1.0,1992,de,car
+audi_a4,Audi A4,350000,1.0,1997,de,car
+audi_rs6,Audi RS6,2800000,1.9,2008,de,car
+vw_golf2,VW Golf II,200000,1.0,1988,de,car
+vw_passat,VW Passat B3,220000,1.0,1990,de,car
+opel_astra,Opel Astra F,180000,1.0,1993,de,car
+porsche944,Porsche 944,800000,1.8,1986,de,car
+porsche911,Porsche 911,3500000,2.0,1990,de,car
+porsche928,Porsche 928,2800000,1.9,1988,de,car
+porsche_cayman,Porsche Cayman,2200000,1.8,2006,de,car
+toyota_mark2,Toyota Mark II,500000,1.2,1998,jp,car
+toyota_chaser,Toyota Chaser,520000,1.3,1997,jp,car
+toyota_supra,Toyota Supra,900000,2.0,1996,jp,car
+toyota_ae86,Toyota AE86,350000,1.5,1985,jp,car
+subaru_wrx,Subaru Impreza WRX,600000,1.3,2005,jp,car
+subaru_legacy,Subaru Legacy,280000,1.1,2000,jp,car
+mazda_rx5,Mazda RX-5,450000,1.4,1992,jp,car
+mazda_rx7,Mazda RX-7,700000,1.7,1995,jp,car
+mazda_mx5,Mazda MX-5,400000,1.2,1990,jp,car
+nissan_r32,Nissan Skyline R32,850000,1.8,1991,jp,car
+nissan_r34,Nissan Skyline R34,1200000,2.0,1999,jp,car
+nissan_silvia,Nissan Silvia S15,550000,1.5,1999,jp,car
+mitsubishi_evo6,Mitsubishi Evo VI,750000,1.6,1999,jp,car
+mitsubishi_evo9,Mitsubishi Evo IX,850000,1.7,2005,jp,car
+honda_civic,Honda Civic EK9,400000,1.3,1997,jp,car
+honda_nsx,Honda NSX,1800000,2.0,1995,jp,car
