@@ -1,0 +1,222 @@
+/* ========== ОСНОВНЫЕ СТИЛИ ========== */
+* {
+    user-select: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0a0a0a;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* ========== КОНСОЛЬ ЗАГРУЗКИ ========== */
+#bootConsole {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0c0c0c;
+    color: #00ff41;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    padding: 20px;
+    z-index: 1000;
+    overflow-y: auto;
+    box-shadow: inset 0 0 30px rgba(0,255,65,0.1);
+}
+
+.boot-line {
+    white-space: pre-wrap;
+    margin-bottom: 4px;
+    opacity: 0;
+    animation: fadeIn 0.2s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.boot-progress-bar {
+    background: #1a3a1a;
+    border-radius: 4px;
+    height: 18px;
+    width: 300px;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+.boot-progress-fill {
+    background: #00ff41;
+    height: 100%;
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+/* ========== ОСНОВНОЙ ИНТЕРФЕЙС ========== */
+#gameUI {
+    display: none;
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    min-height: 100vh;
+    padding: 2rem;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.container-center {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+/* Шапка */
+.game-header {
+    background: rgba(30, 41, 59, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 1.5rem;
+    padding: 1.25rem 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+    border: 1px solid rgba(59,130,246,0.2);
+}
+
+.game-title {
+    font-size: 1.875rem;
+    font-weight: bold;
+    color: white;
+}
+
+.game-subtitle {
+    color: #94a3b8;
+    font-size: 0.875rem;
+}
+
+.money-box {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4ade80;
+}
+
+/* Кнопки действий */
+.action-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.action-btn {
+    font-weight: bold;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    font-size: 1.125rem;
+    transition: all 0.2s;
+    cursor: pointer;
+    text-align: center;
+    border: none;
+    color: white;
+}
+
+.action-btn:hover {
+    transform: scale(1.02);
+    filter: brightness(1.1);
+}
+
+.btn-dump {
+    background: linear-gradient(135deg, #4a3b2c, #2d2b26);
+}
+
+.btn-shop {
+    background: linear-gradient(135deg, #1e3a5f, #1e2a4a);
+}
+
+.btn-avito {
+    background: linear-gradient(135deg, #4c1d95, #3b0764);
+}
+
+/* Гараж */
+.garage-card {
+    background: #1e293b;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+}
+
+.garage-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 0.75rem;
+}
+
+.garage-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.garage-slot {
+    background: #334155;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    transition: all 0.2s;
+    cursor: pointer;
+    text-align: center;
+}
+
+.garage-slot:hover {
+    transform: scale(1.02);
+    background: #475569;
+}
+
+/* Модалки */
+.modal-bg {
+    background-color: rgba(0,0,0,0.85);
+    backdrop-filter: blur(3px);
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #374151;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #6366f1;
+    border-radius: 3px;
+}
+
+.game-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #1e293b;
+    border-left: 4px solid #3b82f6;
+    padding: 12px 20px;
+    border-radius: 12px;
+    z-index: 200;
+    animation: slideIn 0.3s;
+    max-width: 320px;
+    font-family: system-ui;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
